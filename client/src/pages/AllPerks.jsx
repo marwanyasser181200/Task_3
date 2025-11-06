@@ -30,7 +30,14 @@ export default function AllPerks() {
 
 */
 
-  
+  useEffect(() => {
+    loadAllPerks() 
+  }, [])
+
+  useEffect(() => {
+    loadAllPerks()
+  }, [searchQuery, merchantFilter])
+
   useEffect(() => {
     // Extract all merchant names from perks array
     const merchants = perks
@@ -47,14 +54,14 @@ export default function AllPerks() {
     // This effect depends on [perks], so it re-runs whenever perks changes
   }, [perks]) // Dependency: re-run when perks array changes
 
-  
+
   async function loadAllPerks() {
     // Reset error state before new request
     setError('')
     
     // Show loading indicator
     setLoading(true)
-    
+
     try {
       // Make GET request to /api/perks/all with query parameters
       const res = await api.get('/perks/all', {
@@ -62,7 +69,7 @@ export default function AllPerks() {
           // Only include search param if searchQuery is not empty
           search: searchQuery.trim() || undefined,
           // Only include merchant param if merchantFilter is not empty
-          merchant: merchantFilter.trim() || undefined
+          merchant: merchantFilter.trim() || undefined,
         }
       })
       
@@ -136,7 +143,8 @@ export default function AllPerks() {
                 type="text"
                 className="input"
                 placeholder="Enter perk name..."
-                
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
               <p className="text-xs text-zinc-500 mt-1">
                 Auto-searches as you type, or press Enter / click Search
@@ -151,7 +159,8 @@ export default function AllPerks() {
               </label>
               <select
                 className="input"
-                
+                value={merchantFilter}
+                onChange={(e) => setMerchantFilter(e.target.value)}
               >
                 <option value="">All Merchants</option>
                 
@@ -289,4 +298,3 @@ export default function AllPerks() {
     </div>
   )
 }
-
